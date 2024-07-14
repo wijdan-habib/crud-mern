@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function AddUser() {
   const [name, setName] = useState('');
@@ -24,7 +25,7 @@ export default function AddUser() {
         email
       });
       // Handle response
-      console.log('User added successfully:', response.data);
+      toast.success(response.data.message,{position:"top-right"}) 
       // Optionally redirect or clear form
       setName('')
       setPhone('')

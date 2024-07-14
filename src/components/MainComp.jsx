@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function MainComp() {
   const [user, setUser] = useState([]);
@@ -16,6 +17,17 @@ export default function MainComp() {
     };
     fetchData();
   }, []);
+
+  const deleteUser = async (id) => {
+    await axios.delete(`http://localhost:5000/api/delete/user/${id}`)
+      .then((res) => {
+        setUser((preUser) => preUser.filter((user) => user._id !== id) )
+        toast.success(res.data.message, {position:"top-right"});
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return (
     <div>
@@ -34,16 +46,16 @@ export default function MainComp() {
               </thead>
               <tbody>
                 {user.map((user, index) => (
-                  <tr key={user.id}>
+                  <tr key={user._id}> {/* Use user._id as the key */}
                     <td>{index + 1}</td>
                     <td>{user.name}</td>
                     <td>{user.phone}</td>
                     <td>{user.email}</td>
                     <td>
-                    <Link to={`update-user/${user._id}`}>
-                      <i className="fa-solid fa-pen-to-square"></i>
-                    </Link> |
-                      <Link><i className="fa-solid fa-trash"></i></Link>
+                      <Link to={`update-user/${user._id}`}>
+                        <i className="fa-solid fa-pen-to-square"></i>
+                      </Link> |
+                      <button onClick={() => deleteUser(user._id)}><i className="fa-solid fa-trash"></i></button>
                     </td>
                   </tr>
                 ))}
